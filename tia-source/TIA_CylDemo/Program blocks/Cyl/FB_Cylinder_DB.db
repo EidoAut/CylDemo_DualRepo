@@ -1,0 +1,74 @@
+﻿DATA_BLOCK "FB_Cylinder_DB"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+NON_RETAIN
+"FB_Cylinder"
+
+BEGIN
+  Input
+    ExtendCylA        Bool    false
+    RetractCylA       Bool    false
+    ExtendCylB        Bool    false
+    RetractCylB       Bool    false
+    PressureOk        Bool    false
+  Output
+    CylA_Outputs      "UDT_IActStatus"
+      Extended        Bool    false
+      Retracted       Bool    false
+    CylB_Outputs      "UDT_IActStatus"
+      Extended        Bool    false
+      Retracted       Bool    false
+  InOut
+  Static
+    CylA              "FB_CylA"
+      Input
+        Cmd            "UDT_IActCmd"
+        Inp            "UDT_CylA"
+      Output
+        Status         "UDT_IActStatus"
+          Extended     Bool    false
+          Retracted    Bool    false
+      InOut
+      Static
+        valveExtend    Bool    false
+        valveRetract   Bool    false
+        isExtended     Bool    false
+        isRetracted    Bool    false
+        firstScan      Bool    true
+
+    CylB              "FB_CylB"
+      Input
+        Cmd            "UDT_IActCmd"
+        Cfg            "UDT_CylB"
+        SpeedPerScan   Int     0
+      Output
+        Status         "UDT_IActStatus"
+          Extended     Bool    false
+          Retracted    Bool    false
+      InOut
+      Static
+        position       Int     0
+        target         Int     0
+        step           Int     0
+        firstScan      Bool    true
+
+    CmdCylA           "UDT_IActCmd"
+      Extend           Bool   false
+      Retract          Bool   false
+      Enable           Bool   false
+
+    CmdCylB           "UDT_IActCmd"
+      Extend           Bool   false
+      Retract          Bool   false
+      Enable           Bool   false
+
+    CylA_Params       "UDT_CylA"
+      PressureOk       Bool   false
+
+    CylB_Params       "UDT_CylB"
+      SpeedPerScan     Int    0
+
+    firstScan          Bool   false
+END_DATA_BLOCK
+
+

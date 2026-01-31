@@ -1,0 +1,8 @@
+﻿TYPE "UDT_CylB"
+VERSION : 0.1
+   STRUCT
+      SpeedPerScan : Int;
+   END_STRUCT;
+
+END_TYPE
+

@@ -1,0 +1,101 @@
+﻿FUNCTION_BLOCK "FB_Cylinder"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      ExtendCylA : Bool;
+      RetractCylA : Bool;
+      ExtendCylB : Bool;
+      RetractCylB : Bool;
+      PressureOk : Bool;
+   END_VAR
+
+   VAR_OUTPUT 
+      CylA_Outputs : "UDT_IActStatus";
+      CylB_Outputs : "UDT_IActStatus";
+   END_VAR
+
+   VAR 
+      CylA : "FB_CylA";
+      CylB { S7_SetPoint := 'False'} : "FB_CylB";
+      CmdCylA : "UDT_IActCmd";
+      CmdCylB : "UDT_IActCmd";
+      CylA_Params : "UDT_CylA";
+      CylB_Params : "UDT_CylB";
+      firstScan : Bool;
+   END_VAR
+
+
+BEGIN
+	// ==========================================================
+	// "METHOD": BuildCommands()
+	// - builds command structs for each cylinder (no shared CmdAll)
+	// - uses a reusable FC (like inherited helper method)
+	// ==========================================================
+	REGION BuildCommands
+	    // Enable policy:
+	    // Here we keep it simple: each cylinder is enabled if it has any command.
+	    // (You can replace this with explicit HMI enable bits later.)
+	    
+	    #CmdCylA := "FC_BuildActCmd"(
+	                             Enable := (#ExtendCylA OR #RetractCylA),
+	                             Extend := #ExtendCylA,
+	                             Retract := #RetractCylA
+	    );
+	    
+	    #CmdCylB := "FC_BuildActCmd"(
+	                             Enable := (#ExtendCylB OR #RetractCylB),
+	                             Extend := #ExtendCylB,
+	                             Retract := #RetractCylB
+	    );
+	END_REGION
+	
+	
+	// ==========================================================
+	// "METHOD": BuildParams()
+	// - prepares actuator-specific inputs / configuration
+	// - can call FCs for shared rules (clamp, defaults, etc.)
+	// ==========================================================
+	REGION BuildParams
+	    // Pneumatic specific input
+	    #CylA_Params.PressureOk := #PressureOk;
+	    
+	    // Electric configuration example
+	    // (If SpeedPerScan is an input or comes from HMI, clamp it via FC_ClampInt)
+	    #CylB_Params.SpeedPerScan := "FC_ClampInt"(Value := 10,
+	                                               Min := 1,
+	                                               Max := 100);
+	END_REGION
+	
+	
+	// ==========================================================
+	// "METHOD": ExecuteObjects()
+	// - equivalent to calling Update() on member objects in C#
+	// ==========================================================
+	REGION ExecuteObjects
+	    #CylA(
+	          Cmd := #CmdCylA,
+	          Inp := #CylA_Params,
+	          Status => #CylA_Outputs
+	    );
+	    
+	    #CylB(
+	          Cmd := #CmdCylB,
+	          Cfg := #CylB_Params,
+	          Status => #CylB_Outputs
+	    );
+	END_REGION
+	
+	
+	// ==========================================================
+	// "METHOD": PublishOutputs()
+	// - here it is trivial because we already map => to outputs
+	// - but this region is useful when you later add aggregation,
+	//   alarms, overall state, etc.
+	// ==========================================================
+	REGION PublishOutputs
+	    // Nothing else needed for now.
+	    // This is where you would build a combined "system status"
+	    // or expose diagnostics in a controlled way.
+	END_REGION
+END_FUNCTION_BLOCK
+

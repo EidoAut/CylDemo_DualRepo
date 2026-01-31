@@ -1,0 +1,104 @@
+﻿FUNCTION_BLOCK "FB_CylA"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Cmd : "UDT_IActCmd";
+      Inp : "UDT_CylA";
+   END_VAR
+
+   VAR_OUTPUT 
+      Status : "UDT_IActStatus";
+   END_VAR
+
+   VAR 
+      valveExtend : Bool;
+      valveRetract : Bool;
+      isExtended : Bool;
+      isRetracted : Bool;
+      firstScan : Bool := true;
+   END_VAR
+
+
+BEGIN
+	// ==========================================================
+	// "CONSTRUCTOR" (runs once per instance)
+	// ----------------------------------------------------------
+	// Initializes the internal state of the object.
+	// This is equivalent to a class constructor in OOP.
+	// ==========================================================
+	REGION Constructor
+	    IF #firstScan THEN
+	        // Didactic assumption:
+	        // the pneumatic cylinder starts in retracted position
+	        #isExtended := FALSE;
+	        #isRetracted := TRUE;
+	        
+	        #firstScan := FALSE;
+	    END_IF;
+	END_REGION
+	
+	
+	// ==========================================================
+	// "METHOD" 1: ExecuteCommands()
+	// ----------------------------------------------------------
+	// Translates commands and permissives into internal valve outputs.
+	// The object decides how to react to commands.
+	// ==========================================================
+	REGION ExecuteCommands
+	    // Default safe outputs (avoids duplicated assignments)
+	    #valveExtend := FALSE;
+	    #valveRetract := FALSE;
+	    
+	    // Object enable (selection)
+	    // If not enabled, the cylinder ignores all commands.
+	    IF #Cmd.Enable THEN
+	        
+	        // Pneumatic permissive
+	        // No pressure -> no movement allowed
+	        IF #Inp.PressureOk THEN
+	            
+	            // Direct command handling (no priority FC)
+	            // Simple rule: Extend wins over Retract
+	            IF #Cmd.Extend THEN
+	                #valveExtend := TRUE;
+	                
+	            ELSIF #Cmd.Retract THEN
+	                #valveRetract := TRUE;
+	                
+	            END_IF;
+	            
+	        END_IF;
+	    END_IF;
+	END_REGION
+	
+	
+	// ==========================================================
+	// "METHOD" 2: UpdateInternalState()
+	// ----------------------------------------------------------
+	// Simplified "physics":
+	// the energized valve updates the internal position memory.
+	// ==========================================================
+	REGION UpdateInternalState
+	    IF #valveExtend THEN
+	        #isExtended := TRUE;
+	        #isRetracted := FALSE;
+	        
+	    ELSIF #valveRetract THEN
+	        #isExtended := FALSE;
+	        #isRetracted := TRUE;
+	    END_IF;
+	END_REGION
+	
+	
+	// ==========================================================
+	// "METHOD" 3: PublishStatus()
+	// ----------------------------------------------------------
+	// Updates the public interface from the internal state.
+	// Status is derived, never used as internal memory.
+	// ==========================================================
+	REGION PublishStatus
+	    #Status.Extended := #isExtended;
+	    #Status.Retracted := #isRetracted;
+	END_REGION
+END_FUNCTION_BLOCK
+

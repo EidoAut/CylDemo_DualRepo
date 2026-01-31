@@ -1,0 +1,19 @@
+# --- Visual Studio / .NET ---
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- Archives (optional) ---
+*.zip
+*.7z
+
+# --- Logs ---
+*.log

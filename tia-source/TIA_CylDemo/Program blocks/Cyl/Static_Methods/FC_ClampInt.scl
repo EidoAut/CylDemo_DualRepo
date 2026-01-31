@@ -1,0 +1,45 @@
+﻿FUNCTION "FC_ClampInt" : Int
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Value : Int;
+      Min : Int;
+      Max : Int;
+   END_VAR
+
+   VAR_TEMP 
+      v : Int;
+   END_VAR
+
+
+BEGIN
+	// ==========================================================
+	// "STATIC HELPER METHOD" : ClampInt()
+	// ----------------------------------------------------------
+	// This FC behaves like a static utility method in a base class.
+	//
+	// Responsibility:
+	// - Protect a value against invalid ranges
+	// - Apply a common rule in ONE place (no copy/paste)
+	//
+	// OOP analogy:
+	//   int ClampInt(int value, int min, int max)
+	// ==========================================================
+	
+	// Copy input to local working variable
+	#v := #Value;
+	
+	// Apply lower bound
+	IF #v < #Min THEN
+	    #v := #Min;
+	END_IF;
+	
+	// Apply upper bound
+	IF #v > #Max THEN
+	    #v := #Max;
+	END_IF;
+	
+	// Return clamped value
+	#FC_ClampInt := #v;
+END_FUNCTION
+

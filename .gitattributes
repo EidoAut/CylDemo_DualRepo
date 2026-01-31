@@ -1,0 +1,2 @@
+# If you add a TIA archive (.zapXX), consider Git LFS:
+# *.zap* filter=lfs diff=lfs merge=lfs -text

@@ -1,0 +1,129 @@
+﻿FUNCTION_BLOCK "FB_CylB"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Cmd : "UDT_IActCmd";
+      Cfg : "UDT_CylB";
+   END_VAR
+
+   VAR_OUTPUT 
+      Status : "UDT_IActStatus";
+   END_VAR
+
+   VAR 
+      position : Int;
+      target : Int;
+      step : Int;
+      firstScan : Bool := true;
+   END_VAR
+
+
+BEGIN
+	// ==========================================================
+	// "CONSTRUCTOR" (runs once per instance)
+	// ----------------------------------------------------------
+	// Initializes the internal state of the object.
+	// Equivalent to a C# constructor.
+	// ==========================================================
+	REGION Constructor
+	    IF #firstScan THEN
+	        // Start in a known position (didactic choice)
+	        #position := 0;
+	        #target := 0;
+	        
+	        // Publish a known startup status
+	        #Status.Extended := FALSE;
+	        #Status.Retracted := TRUE;
+	        
+	        #firstScan := FALSE;
+	    END_IF;
+	END_REGION
+	
+	
+	// ==========================================================
+	// "METHOD" 1: SanitizeConfig()
+	// ----------------------------------------------------------
+	// Protects the FB against wrong configuration values.
+	// Equivalent to input validation in OOP.
+	// ==========================================================
+	REGION SanitizeConfig
+	    // Read configured speed
+	    #step := #Cfg.SpeedPerScan;
+	    
+	    // Clamp speed into valid range [1..100]
+	    IF #step < 1 THEN
+	        #step := 1;            // Minimum allowed speed
+	    END_IF;
+	    
+	    IF #step > 100 THEN
+	        #step := 100;          // Maximum allowed speed
+	    END_IF;
+	END_REGION
+	
+	
+	// ==========================================================
+	// "METHOD" 2: ExecuteCommands()
+	// ----------------------------------------------------------
+	// Commands express intent (target), not direct motion.
+	// If disabled, commands are ignored.
+	// ==========================================================
+	REGION ExecuteCommands
+	    IF #Cmd.Enable THEN
+	        
+	        // Direct command handling (no priority FC)
+	        // Simple rule: Extend wins over Retract because of IF/ELSIF order.
+	        IF #Cmd.Extend THEN
+	            #target := 100;    // Fully extended target
+	            
+	        ELSIF #Cmd.Retract THEN
+	            #target := 0;      // Fully retracted target
+	        END_IF;
+	        
+	    END_IF;
+	END_REGION
+	
+	
+	// ==========================================================
+	// "METHOD" 3: UpdateMotion()
+	// ----------------------------------------------------------
+	// Moves position towards target, scan by scan.
+	// Policy: If the object is disabled, motion stops (hold position).
+	// ==========================================================
+	REGION UpdateMotion
+	    // If the object is disabled, stop motion (hold current position)
+	    IF NOT #Cmd.Enable THEN
+	        #target := #position;
+	    END_IF;
+	    
+	    // Move towards target
+	    IF #position < #target THEN
+	        #position := #position + #step;
+	        
+	        // Clamp to target (prevent overshoot)
+	        IF #position > #target THEN
+	            #position := #target;
+	        END_IF;
+	        
+	    ELSIF #position > #target THEN
+	        #position := #position - #step;
+	        
+	        // Clamp to target (prevent undershoot)
+	        IF #position < #target THEN
+	            #position := #target;
+	        END_IF;
+	    END_IF;
+	END_REGION
+	
+	
+	// ==========================================================
+	// "METHOD" 4: PublishStatus()
+	// ----------------------------------------------------------
+	// Updates the public interface from internal state.
+	// Status is derived, not used as internal memory.
+	// ==========================================================
+	REGION PublishStatus
+	    #Status.Extended := (#position = 100);
+	    #Status.Retracted := (#position = 0);
+	END_REGION
+END_FUNCTION_BLOCK
+

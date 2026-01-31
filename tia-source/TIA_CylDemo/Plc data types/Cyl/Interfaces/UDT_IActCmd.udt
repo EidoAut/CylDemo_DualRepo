@@ -1,0 +1,10 @@
+﻿TYPE "UDT_IActCmd"
+VERSION : 0.1
+   STRUCT
+      Extend : Bool;
+      Retract : Bool;
+      Enable : Bool;
+   END_STRUCT;
+
+END_TYPE
+

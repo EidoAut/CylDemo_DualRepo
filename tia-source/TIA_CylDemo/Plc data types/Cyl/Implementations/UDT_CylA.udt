@@ -1,0 +1,8 @@
+﻿TYPE "UDT_CylA"
+VERSION : 0.1
+   STRUCT
+      PressureOk : Bool;
+   END_STRUCT;
+
+END_TYPE
+

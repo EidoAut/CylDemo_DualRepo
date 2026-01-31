@@ -1,0 +1,9 @@
+﻿TYPE "UDT_IActStatus"
+VERSION : 0.1
+   STRUCT
+      Extended : Bool;
+      Retracted : Bool;
+   END_STRUCT;
+
+END_TYPE
+

@@ -1,0 +1,36 @@
+﻿FUNCTION "FC_BuildActCmd" : "UDT_IActCmd"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Enable : Bool;
+      Extend : Bool;
+      Retract : Bool;
+   END_VAR
+
+   VAR_TEMP 
+      cmd : "UDT_IActCmd";
+   END_VAR
+
+
+BEGIN
+	// ==========================================================
+	// "STATIC METHOD" : BuildActCmd()
+	// ----------------------------------------------------------
+	// This FC behaves like a static helper method in a base class.
+	// It builds a command object (UDT_IActCmd) from simple inputs.
+	//
+	// In OOP terms:
+	// - Input parameters  -> method arguments
+	// - Return value      -> constructed object
+	// - No internal state -> static / stateless method
+	// ==========================================================
+	
+	// Build the command struct locally (clear and explicit)
+	#cmd.Enable := #Enable;
+	#cmd.Extend := #Extend;
+	#cmd.Retract := #Retract;
+	
+	// Return the constructed struct
+	#FC_BuildActCmd := #cmd;
+END_FUNCTION
+
