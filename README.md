@@ -7,7 +7,7 @@
 
 An educational side-by-side implementation of cylinder control using C# objects and Siemens PLC-native FB/UDT/FC structures.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-5bbc85.svg)](LICENSE) ![Technology: C# · SCL](https://img.shields.io/badge/Technology-C%23%20%C2%B7%20SCL-243b34)
+[![License: MIT](https://img.shields.io/badge/License-MIT-5bbc85.svg)](LICENSE)
 
 **Maintained by [EIDO Automation](https://github.com/EidoAut).** Available under the [MIT license](LICENSE). Consult the usage requirements, supported targets and limitations documented below.
 
