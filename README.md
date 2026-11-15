@@ -1,4 +1,17 @@
-# CylDemo — Dual PLC (TIA Portal) + C# Repository
+<!-- EIDO repository presentation. Detailed technical documentation is preserved below. -->
+<p align="center"><img src="docs/assets/eido-project-banner.svg" alt="CylDemo — EIDO Automation" width="100%"></p>
+
+# CylDemo
+
+**Object-oriented cylinder control · Siemens and C#**
+
+An educational side-by-side implementation of cylinder control using C# objects and Siemens PLC-native FB/UDT/FC structures.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-5bbc85.svg)](LICENSE) ![Technology: C# · SCL](https://img.shields.io/badge/Technology-C%23%20%C2%B7%20SCL-243b34)
+
+**Maintained by [EIDO Automation](https://github.com/EidoAut).** Available under the [MIT license](LICENSE). Consult the usage requirements, supported targets and limitations documented below.
+
+## Project documentation
 
 This repository contains **two parallel implementations** of the same didactic architecture:
 
