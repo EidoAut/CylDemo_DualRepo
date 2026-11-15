@@ -41,7 +41,7 @@ The goal is to show how a clean, object-oriented design can be expressed in PLC-
 
 ---
 
-## PLC ↔ C# mapping (mental model)
+## PLC and C# mapping (mental model)
 
 | PLC / TIA Portal                  | C# / Visual Studio                      |
 |----------------------------------|-----------------------------------------|
