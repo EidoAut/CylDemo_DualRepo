@@ -5,7 +5,7 @@
 
 **Object-oriented cylinder control · Siemens and C#**
 
-An educational side-by-side implementation of cylinder control using C# objects and Siemens PLC-native FB/UDT/FC structures.
+<p align="justify">An educational side-by-side implementation of cylinder control using C# objects and Siemens PLC-native FB/UDT/FC structures.</p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-5bbc85.svg)](LICENSE)
 
@@ -18,7 +18,7 @@ This repository contains **two parallel implementations** of the same didactic a
 - **TIA Portal (PLC)**: OOP-style design using **FBs (objects)**, **UDTs (data interfaces)**, and **FCs (stateless static helpers)**.
 - **C# / Visual Studio**: Real OOP implementation using **interfaces**, **classes**, **composition**, and **static helper methods**.
 
-The goal is to show how a clean, object-oriented design can be expressed in PLC-native constructs and then mapped 1:1 to C#.
+<p align="justify">The goal is to show how a clean, object-oriented design can be expressed in PLC-native constructs and then mapped 1:1 to C#.</p>
 
 ---
 
@@ -88,5 +88,5 @@ This repo includes a `.gitignore` suitable for:
 - Visual Studio (`bin/`, `obj/`, `.vs/`)
 - common OS/editor artifacts
 
-TIA exports are text and are meant to be tracked.
+<p align="justify">TIA exports are text and are meant to be tracked.</p>
 
